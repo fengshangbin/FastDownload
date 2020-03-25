@@ -47,7 +47,8 @@ public class BatchDownload {
             }else{
                 if(localMD5==null)localMD5=fileMD5;
                 if(serverMD5!=localMD5){
-                    file.delete();
+                    //file.delete();
+                    deleteFile(file);
                     DownloadBreakPoint.deleteCache(resource.getPath());
                 }
             }
@@ -61,6 +62,12 @@ public class BatchDownload {
             downloadProgress.addTotal(end-start);
             fixedExecutorService.submit(new DownloadTask(resource, downloadProgress, start, end, (int)chunkCount));
         }
+    }
+
+    private void deleteFile(File file){
+        final File to = new File(file.getAbsolutePath() + System.currentTimeMillis());
+        file.renameTo(to);
+        to.delete();
     }
 
     public void destroy(){
